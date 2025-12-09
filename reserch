@@ -1,0 +1,90 @@
+The advanced linux programming
+
+Linux programming interfaces 
+https://man7.org/tlpi/
+
+1. create ur own text editor
+https://viewsourcecode.org/snaptoken/kilo/
+
+2. learn the source code 
+git clone https://git.suckless.org/st
+
+3. VT100 spec
+https://vt100.net/docs/vt100-ug/chapter3.html
+
+4. ANSII escape seq
+https://gist.github.com/fnky/458719343aabd01cfb17a3a4f7296797
+
+5. POSIX escape sequence
+https://pubs.opengroup.org/onlinepubs/7908799/xbd/termios.html
+
+6. PTY
+The Linux Programming Interface" Chapter 64 (PTYs)
+
+-Build a PTY wrapper only (no display)
+-Study linenoise library - understand line editing
+-Display & ANSI Build cell buffer
+-Parse BASIC ANSI: \033[2J (clear), \033[H (cursor home)
+-Parse BASIC ANSI: \033[2J (clear), \033[H (cursor home)
+-Input & Vi Mode Raw terminal input
+-Vi mode state machine
+-Copy to clipboard integration
+- Put it all together
+- Add colors, basic graphics
+- Bug fixes & testing
+
+myterm/
+├── src/
+│   ├── pty.c           # PTY handling
+│   ├── buffer.c        # Cell buffer
+│   ├── ansi.c          # ANSI parser
+│   ├── input.c         # Keyboard input
+│   ├── vimode.c        # Vi mode
+│   └── main.c          # Main loop
+├── include/
+│   └── term.h
+├── Makefile
+└── README.md
+
+Project 1: PTY Cat (Day 1)
+// Just forward between stdin and PTY
+// 50 lines max, proves you understand PTY
+
+Project 2: ANSI Viewer (Day 3)
+// Read a file with ANSI codes, display it
+// Tests your ANSI parser
+
+Project 3: Screen Editor (Day 7)
+// Full-screen text editor (like nano)
+// Tests cell buffer and input
+
+Project 4: Vi Mode Tester (Day 14)
+// Just vi-mode selection on static text
+// Isolate vi logic
+
+Project 5: FINAL Terminal (Day 21+)
+// Combine all above
+
+Tools You Need
+# Debugging tools
+strace -e trace=read,write,ioctl ./myterm
+hexdump -C  # See escape sequences
+infocmp xterm-256color  # Terminal capabilities
+
+# Development
+gdb -tui ./myterm  # Debug with TUI
+valgrind ./myterm  # Memory leaks
+
+GOALS:
+Can explain what a PTY is
+Can set terminal to raw mode
+Can parse \033[2J
+Can implement circular buffer
+Can handle resize signals
+Can copy text to clipboard
+Can implement vi visual mode
+
+What terminal do:
+Read from keyboard → write to PTY
+Read from PTY → parse ANSI → update buffer → render
+Handle signals (resize, interrupt)
