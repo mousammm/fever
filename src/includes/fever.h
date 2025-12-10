@@ -3,6 +3,7 @@
 #define FEVER_H
 
 int term_init(void);                    /* Returns master FD or -1 */
+void term_cleanup(int fd);
 int term_read(int fd, char *buf, int len);  /* Read from PTY */
 int term_write(int fd, const char *data, int len); /* Write to PTY */
 
