@@ -1,6 +1,6 @@
 CC=gcc
-CFLAGS=-Wall -Wextra -I./src/includes
-LDLIBS = -lutil
+CFLAGS=-Wall -Wextra -g -I./src/includes
+LDLIBS = -lutil -lX11
 BINARY=fever
 SRCDIR=src
 BINDIR=bin
@@ -16,11 +16,11 @@ $(BINDIR):
 
 $(BINDIR)/$(BINARY): $(OBJS)
 	@echo "Linking $@"
-	$(CC) $(CFLAGS) -o $@ $(OBJS)
+	$(CC) $(CFLAGS) -o $@ $(OBJS) $(LDLIBS)
 
 $(BINDIR)/%.o: $(SRCDIR)/%.c | $(BINDIR)
 	@echo "Compiling $< -> $@"
-	$(CC) $(CFLAGS) -c -o $@ $< $(LDLIBS)
+	$(CC) $(CFLAGS) -c -o $@ $< 
 
 run: $(BINDIR)/$(BINARY)
 	./$(BINDIR)/$(BINARY)
