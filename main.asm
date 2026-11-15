@@ -46,6 +46,7 @@ BACKLOG equ 5
 segment readable executable
 entry _start
 _start:
+
     print STDOUT, "[INFO] Starting Web Server!", 10
 
     print STDOUT, "[INFO] Creating socket...", 10
@@ -53,9 +54,8 @@ _start:
     cmp rax, 0
     jl error
     mov qword [sockfd], rax
-    print STDOUT, "[INFO] Socket created...", 10
 
-    print STDOUT, "[INFO] Binding the newly created socket...", 10
+    print STDOUT, "[INFO] Binding socket...", 10
     ; fill the server address for server
     mov word  [servaddr.sin_family], AF_INET
     mov word  [servaddr.sin_port],   PORT
@@ -63,13 +63,11 @@ _start:
     syscall3 SYS_bind, [sockfd], servaddr.sin_family, servaddr_len
     cmp rax, 0
     jl error
-    print STDOUT, "[INFO] Socket binded...", 10
 
     print STDOUT, "[INFO] Listening to socket...", 10
     syscall2 SYS_listen, [sockfd], BACKLOG
     cmp rax, 0
     jl error
-    print STDOUT, "[INFO] Listening completed...", 10
 
     print STDOUT, "[INFO] Accepting request...", 10
 next_request:
@@ -77,14 +75,10 @@ next_request:
     cmp rax, 0
     jl error
     mov qword [connfd], rax
-
     syscall3 SYS_write, [connfd], response, response_len
     jmp next_request
 
-    print STDOUT, "[INFO] All request serve!", 10
     print STDOUT, "[INFO] Server closing!", 10
-
-    print STDOUT, "[INFO] everything OK!", 10
     syscall1 SYS_close, [connfd]
     syscall1 SYS_close, [sockfd]
     syscall1 SYS_exit, EXIT_SUCCESS 
@@ -121,12 +115,11 @@ clientaddr_len dd 0 ; accept will fill this with client address len
 
 response db "HTTP/1.1 200 OK", 13, 10
          db "Content-Type: text/html; charset=UTF-8", 13, 10
-         db "Connection: close", 13, 10
+         db "Connection: keep-alive", 13, 10
          db 13, 10
          db "<!DOCTYPE html>", 10
          db "<html>", 10
          db "<head><title>C Web Server</title></head>", 10
          db "<body><h1>Hello from fasm!</h1><p>This is a Http Web Server!</p></body>", 10
          db "</html>", 10
-
 response_len = $ - response
